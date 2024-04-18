@@ -37,15 +37,42 @@ public class HelloWorldTest implements RequestHandler<APIGatewayProxyRequestEven
 		context.getLogger().log(apiGatewayProxyRequestEvent.toString());
 		Map<String, String> queryStringParameters = apiGatewayProxyRequestEvent.getQueryStringParameters();
 		try {
-			String responseBody = gson.toJson("Hello from Lambda");
+			String responseBody = gson.toJson(new ResponseObject(SC_OK, "Hello from Lambda"));
 			return new APIGatewayProxyResponseEvent()
 					.withStatusCode(SC_OK)
 					.withBody(responseBody);
 		} catch (Exception exception) {
-			String responseBody = gson.toJson("Error");
+			String responseBody = gson.toJson(new ResponseObject(SC_BAD_REQUEST, "Error"));
 			return new APIGatewayProxyResponseEvent()
 					.withStatusCode(SC_BAD_REQUEST)
 					.withBody(responseBody);
+		}
+
+	}
+
+	private static class ResponseObject {
+		private int statusCode;
+		private String message;
+
+		public ResponseObject(int statusCode, String message) {
+			this.statusCode = statusCode;
+			this.message = message;
+		}
+
+		public int getStatusCode() {
+			return statusCode;
+		}
+
+		public void setStatusCode(int statusCode) {
+			this.statusCode = statusCode;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
 		}
 	}
 
